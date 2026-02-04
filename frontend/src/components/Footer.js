@@ -55,6 +55,7 @@ function Footer() {
             <li><Link to="/packages">KIDS</Link></li>
             <li><Link to="/pre-wedding">PRE WEDDING</Link></li>
             <li><Link to="/contact">CONTACT US</Link></li>
+            <li><Link to="/admin">ADMIN</Link></li>
           </ul>
         </div>
 

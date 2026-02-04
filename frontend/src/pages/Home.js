@@ -1,10 +1,80 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { db } from "../firebase";
+import { collection, addDoc, serverTimestamp, onSnapshot } from "firebase/firestore";
 
 function Home() {
+  console.log("Home: Component initialized - Version 1.2.1");
   const [showPopup, setShowPopup] = useState(false);
+  const [status, setStatus] = useState({ type: "", message: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [bookingData, setBookingData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    date: "",
+    type: [],
+    budget: "200,000"
+  });
 
   const togglePopup = () => {
     setShowPopup(!showPopup);
+  };
+
+  useEffect(() => {
+    // Listen to bookings to check connection - just metadata
+    const unsub = onSnapshot(collection(db, "bookings"), () => {
+      console.log("Home: Connection Verified via real-time listener");
+    }, (err) => {
+      console.error("Home: Connection error", err);
+      setStatus({ type: "error", message: "Database connection failed. Please try again later." });
+    });
+    return () => unsub();
+  }, []);
+
+  const handleBookingChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    if (type === 'checkbox') {
+      const updatedTypes = checked
+        ? [...bookingData.type, value]
+        : bookingData.type.filter(t => t !== value);
+      setBookingData({ ...bookingData, type: updatedTypes });
+    } else {
+      setBookingData({ ...bookingData, [name]: value });
+    }
+  };
+
+  const handleBookingSubmit = async (e) => {
+    e.preventDefault();
+    console.log("Home: handleBookingSubmit triggered", bookingData);
+    setIsSubmitting(true);
+    setStatus({ type: "info", message: "Connecting to database..." });
+
+    try {
+      const dataToSave = {
+        ...bookingData,
+        timestamp: serverTimestamp()
+      };
+
+      console.log("Home: Attempting Firestore write with 15s timeout...");
+
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Request timed out (15s). Please check your internet connection or Firebase permissions.")), 15000)
+      );
+
+      const savePromise = addDoc(collection(db, "bookings"), dataToSave);
+      const docRef = await Promise.race([savePromise, timeoutPromise]);
+
+      console.log("Home: Successfully saved with ID:", docRef.id);
+      setStatus({ type: "success", message: "Booking Request Sent Successfully!" });
+      window.alert("Booking Request Sent Successfully!");
+      setBookingData({ name: "", email: "", phone: "", date: "", type: [], budget: "200,000" });
+    } catch (error) {
+      console.error("Home: Submission error:", error);
+      setStatus({ type: "error", message: error.message });
+      window.alert("Failed to send booking: " + error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -108,52 +178,83 @@ function Home() {
 
           {/* Right Column: Form */}
           <div className="contact-form animate-fade-in-up animation-delay-600">
-            <form>
+            <form onSubmit={handleBookingSubmit}>
               <div className="form-group">
                 <label className="form-label">Name</label>
-                <input type="text" placeholder="Name" className="form-input" />
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Name"
+                  value={bookingData.name}
+                  onChange={handleBookingChange}
+                  className="form-input"
+                  required
+                />
               </div>
 
               <div className="form-group">
                 <label className="form-label">Email <span style={{ color: '#ef4444' }}>*</span></label>
-                <input type="email" placeholder="Email" className="form-input" />
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  value={bookingData.email}
+                  onChange={handleBookingChange}
+                  className="form-input"
+                  required
+                />
               </div>
 
               <div className="form-group">
                 <label className="form-label">Phone Number <span style={{ color: '#ef4444' }}>*</span></label>
-                <input type="tel" placeholder="Phone Number" className="form-input" />
+                <input
+                  type="tel"
+                  name="phone"
+                  placeholder="Phone Number"
+                  value={bookingData.phone}
+                  onChange={handleBookingChange}
+                  className="form-input"
+                  required
+                />
               </div>
 
               <div className="form-group">
                 <label className="form-label">Date of Event <span style={{ color: '#ef4444' }}>*</span></label>
-                <input type="date" className="form-input" />
+                <input
+                  type="date"
+                  name="date"
+                  value={bookingData.date}
+                  onChange={handleBookingChange}
+                  className="form-input"
+                  required
+                />
               </div>
 
               <div className="form-group">
                 <label className="form-label">Type of Event</label>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.875rem' }}>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-                    <input type="checkbox" /> <span>Wedding Photography</span>
+                    <input type="checkbox" name="type" value="Wedding" onChange={handleBookingChange} checked={bookingData.type.includes("Wedding")} /> <span>Wedding Photography</span>
                   </label>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-                    <input type="checkbox" /> <span>Haldi and Mahendi</span>
+                    <input type="checkbox" name="type" value="Haldi/Mahendi" onChange={handleBookingChange} checked={bookingData.type.includes("Haldi/Mahendi")} /> <span>Haldi and Mahendi</span>
                   </label>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-                    <input type="checkbox" /> <span>Pre-Wedding</span>
+                    <input type="checkbox" name="type" value="Pre-Wedding" onChange={handleBookingChange} checked={bookingData.type.includes("Pre-Wedding")} /> <span>Pre-Wedding</span>
                   </label>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-                    <input type="checkbox" /> <span>Baby Photoshoot</span>
+                    <input type="checkbox" name="type" value="Baby" onChange={handleBookingChange} checked={bookingData.type.includes("Baby")} /> <span>Baby Photoshoot</span>
                   </label>
                 </div>
               </div>
 
               <div className="form-group">
                 <label className="form-label">Budget</label>
-                <select className="form-select">
-                  <option>200,000</option>
-                  <option>300,000</option>
-                  <option>500,000</option>
-                  <option>1,000,000+</option>
+                <select name="budget" value={bookingData.budget} onChange={handleBookingChange} className="form-select">
+                  <option value="200,000">200,000</option>
+                  <option value="300,000">300,000</option>
+                  <option value="500,000">500,000</option>
+                  <option value="1,000,000+">1,000,000+</option>
                 </select>
               </div>
 
@@ -163,8 +264,21 @@ function Home() {
                 <span style={{ marginLeft: 'auto', fontSize: '0.75rem', color: '#9ca3af' }}>reCAPTCHA</span>
               </div>
 
-              <button type="button" className="btn-primary">
-                Send
+              {status.message && (
+                <div className={`p-3 mb-4 rounded text-xs font-bold ${status.type === "error" ? "bg-red-100 text-red-700" :
+                  status.type === "success" ? "bg-green-100 text-green-700" :
+                    "bg-blue-100 text-blue-700"
+                  }`}>
+                  {status.message}
+                </div>
+              )}
+              <button
+                type="submit"
+                className="btn-primary"
+                disabled={isSubmitting}
+                style={{ opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
+              >
+                {isSubmitting ? "Sending Request..." : "Send Request"}
               </button>
             </form>
           </div>
