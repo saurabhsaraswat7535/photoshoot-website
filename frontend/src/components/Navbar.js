@@ -64,11 +64,20 @@ function Navbar() {
           <Link to="/packages">Kids</Link>
           <Link to="/pre-wedding">Pre Wedding</Link>
           <Link to="/contact" className="connect-btn">Connect</Link>
-        </div>
 
-        {/* Mobile Menu Placeholder */}
-        <div style={{ display: 'none' }}>
-          {/* Mobile logic would go here */}
+          {/* ADMIN BUTTON */}
+          <Link
+            to="/login"
+            style={{
+              marginLeft: "20px",
+              padding: "6px 12px",
+              border: "1px solid #eab308",
+              borderRadius: "4px",
+              fontSize: "14px"
+            }}
+          >
+            Admin
+          </Link>
         </div>
       </div>
     </nav>

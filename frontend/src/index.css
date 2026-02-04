@@ -4,7 +4,6 @@
 }
 
 html {
-  scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
   height: 100%;
 }
@@ -208,15 +207,9 @@ body {
   color: #d1d5db;
   padding: 4rem 2rem;
   position: relative;
-  /* Ensure it can snap if needed, though typically snap is for full height. 
-     If this isn't full height, check standard behavior.
-     Let's adding min-height to allow it to be a significant section.
-  */
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  scroll-snap-align: start;
 }
 
 .footer-top-btn {
@@ -408,4 +401,183 @@ body {
   to {
     transform: scale(1);
   }
+}
+/* Admin Redesign Utilities */
+:root {
+  --gold-primary: #eab308;
+  --gold-dark: #ca8a04;
+  --dark-bg: #111827;
+  --dark-card: #1f2937;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+.glass-morphism {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.gold-gradient {
+  background: linear-gradient(135deg, #facc15 0%, #eab308 50%, #ca8a04 100%);
+}
+
+.gold-text-gradient {
+  background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.admin-sidebar-item {
+  transition: all 0.3s ease;
+  border-radius: 0.5rem;
+}
+
+.admin-sidebar-item:hover, .admin-sidebar-item.active {
+  background: rgba(234, 179, 8, 0.1);
+  color: #eab308;
+}
+
+.modern-table-row {
+  transition: background-color 0.2s;
+}
+
+.modern-table-row:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.input-focus-gold:focus {
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.2);
+}
+
+/* Pluto Dashboard Theme */
+.pluto-sidebar {
+  background: #151b2e;
+  color: #aebfd4;
+}
+
+.pluto-main-bg {
+  background: #f8f9fa;
+}
+
+.pluto-card {
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.pluto-card:hover {
+  transform: translateY(-5px);
+}
+
+.pluto-stats-label {
+  color: #98a6ad;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pluto-stats-value {
+  color: #313a46;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.pluto-sidebar-profile {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pluto-online-dot {
+  width: 10px;
+  height: 10px;
+  background-color: #0acf97;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.pluto-header {
+  background: white;
+  box-shadow: 0 0 35px 0 rgba(154, 161, 171, 0.15);
+}
+
+.pluto-nav-item {
+  color: #8391a2;
+}
+
+.pluto-nav-item:hover, .pluto-nav-item.active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.pluto-badge {
+  font-size: 10px;
+  padding: 2px 5px;
+  border-radius: 50%;
+  position: absolute;
+  top: 10px;
+  right: 5px;
+}
+
+/* Appzia Login Theme */
+.appzia-bg {
+  background: #2a3142;
+}
+
+.appzia-card {
+  background: #36404e;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.appzia-input {
+  background: #3d4957 !important;
+  border: 1px solid #4a5a6a !important;
+  color: #aebfd4 !important;
+  border-radius: 4px !important;
+}
+
+.appzia-input::placeholder {
+  color: #637282;
+}
+
+.appzia-btn {
+  background: #00b1cc;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.appzia-btn:hover {
+  background: #0099ae;
+}
+
+.appzia-text-secondary {
+  color: #8c98a5;
+}
+
+.appzia-link {
+  color: #8c98a5;
+  font-size: 13px;
+  transition: color 0.2s;
+}
+
+.appzia-link:hover {
+  color: #ffffff;
+}
+
+/* Absolute Full-Screen Fix */
+html, body, #root {
+  height: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
 }
