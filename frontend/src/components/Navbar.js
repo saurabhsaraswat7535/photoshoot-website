@@ -26,11 +26,11 @@ function Navbar() {
   const navClass = `navbar ${isHome && !isScrolled ? "transparent" : "scrolled"}`;
 
   // Logo Style: Invert brightness (make white) if transparent, otherwise default
-  const logoStyle = {
-    height: '2.5rem',
-    transition: 'all 0.3s',
-    filter: isHome && !isScrolled ? 'brightness(0) invert(1)' : 'none'
-  };
+  // const logoStyle = {
+  //   height: '2.5rem',
+  //   transition: 'all 0.3s',
+  //   filter: isHome && !isScrolled ? 'brightness(0) invert(1)' : 'none'
+  // };
 
   // Text Style
   const textStyle = {

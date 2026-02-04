@@ -63,10 +63,8 @@ function Footer() {
         <div className="footer-col">
           <h2 className="footer-heading">Get Social</h2>
           <div className="social-icons">
-            <a href="#" className="social-icon">f</a>
-            <a href="#" className="social-icon">t</a>
-            <a href="#" className="social-icon">in</a>
-            <a href="#" className="social-icon">g+</a>
+            <a href="https://facebook.com" target="_blank" rel="noreferrer" className="social-icon">Facebook</a>
+            <a href="https://instagram.com" target="_blank" rel="noreferrer" className="social-icon">Instagram</a>
           </div>
 
           <div className="footer-bottom-links">
